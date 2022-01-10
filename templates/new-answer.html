@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+New answer
+{% endblock %}
+
+{% block body %}
+
+<h1> The question </h1>
+
+<table>
+    <colgroup span='7'></colgroup>
+        <tr align='center'>
+            {% for item in table_header %}
+            <th> {{ item }}</th>
+            {% endfor %}
+        </tr>
+        <tbody>
+            <tr align='center'>
+                {% for key, value in the_question.items() %}
+                <td> {{ value }} </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+</table>
+
+<h1> Your answer </h1>
+
+<form action='/question/{{ question_id }}/new-answer' method="post">
+    <fieldset>
+      <legend>Message</legend>
+      <textarea type="text" name="message" rows='10' cols='40'></textarea>
+    </fieldset>
+    <button type='submit'>Submit</button>
+</form>
+
+
+
+{% endblock %}

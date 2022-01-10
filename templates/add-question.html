@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add new question
+{% endblock %}
+
+{% block body %}
+<form action='/add-question' method="post">
+    <fieldset>
+      <legend>Title</legend>
+      <input type="text" name="title" size="40">
+    </fieldset>
+    <fieldset>
+      <legend>Message</legend>
+      <textarea type="text" name="message" rows='10' cols='40'></textarea>
+    </fieldset>
+    <fieldset>
+      <legend>Image link</legend>
+      <input type="url" name="image" size="40">
+    </fieldset>
+    <button type='submit'>Submit</button>
+</form>
+
+{% endblock %}

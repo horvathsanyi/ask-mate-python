@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    List questions
+{% endblock %}
+
+{% block body %}
+<h1>AskMate</h1>
+
+<form action='/list' method='get'>
+    <label for='sort_by'>Sort by:</label>
+    <select id='sort_by' name='sort_by'>
+        <option {{ "selected" if sort_by=="title" else ""}} value='title'>Title</option>
+        <option {{ "selected" if sort_by=="submission_time" else ""}} value='submission_time'>Time</option>
+        <option {{ "selected" if sort_by=="message" else ""}} value='message'>Message</option>
+        <option {{ "selected" if sort_by=="view_number" else ""}} value='view_number'>Views</option>
+        <option {{ "selected" if sort_by=="vote_number" else ""}} value='vote_number'>Votes</option>
+    </select>
+    <select id='order' name='order'>
+        <option {{ "selected" if order=="asc" else ""}} value='asc'>Ascending</option>
+        <option {{ "selected" if order=="desc" else ""}} value='desc'>Descending</option>
+    </select>
+    <button type="submit">Sort</button>
+</form>
+
+<table>
+    <colgroup span='8'></colgroup>
+        <tr align='center'>
+            <th> ID </th>
+            <th> Submission time </th>
+            <th> View number </th>
+            <th> Vote number </th>
+            <th> Title </th>
+            <th> Message </th>
+            <th> Image </th>
+            <th> Vote up </th>
+        </tr>
+        <tbody>
+            {% for row in table_data %}
+            <tr align='center'>
+                {% for key, value in row.items() %}
+                    {% if key == 'id' %}
+                    <td><a id='justhere' href='/display-question/{{ value }}'>{{ value }}</a></td>
+                    {% else %}
+                    <td> {{ value }} </td>
+                    {% endif %}
+                {% endfor %}
+                {% for key, value in row.items() %}
+                    {% if key == 'id' %}
+                    <td><a id='votelink' href="/question/{{ row['id'] }}/vote-up">Vote up</a></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+<button name="button"><a href="/add-question">Ask new question</a></button>
+{% endblock %}
