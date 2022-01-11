@@ -1,11 +1,10 @@
 __pycache__/
 venv/
-todo.txt
 vscode/
-idea/
-.vscode/
+todo.txt
 .idea/
-/vscode/
-/idea/
-/.vscode/
 /.idea/
+.idea
+.vscode/
+/.vscode/
+.vscode
