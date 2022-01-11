@@ -17,9 +17,17 @@ ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCAD
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
 
+DROP TABLE IF EXISTS public.registration;
+CREATE TABLE registration (
+    id serial NOT NULL,
+    email text,
+    password text
+);
+
 DROP TABLE IF EXISTS public.user;
 CREATE TABLE "user" (
     id serial NOT NULL,
+    registration_id integer,
     name VARCHAR(20),
     registration_date timestamp without time zone,
     num_of_questions integer,
@@ -73,6 +81,11 @@ CREATE TABLE tag (
     name text
 );
 
+ALTER TABLE ONLY registration
+    ADD CONSTRAINT pk_registration_id PRIMARY KEY (id);
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT fk_registration_id FOREIGN KEY (registration_id) REFERENCES registration(id);
 
 ALTER TABLE ONlY "user"
     ADD CONSTRAINT pk_user_id PRIMARY KEY (id);
