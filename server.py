@@ -148,6 +148,7 @@ def registration():
         return redirect(url_for('list'))
 
 
+'''User login page and authentication'''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
