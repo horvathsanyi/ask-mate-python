@@ -133,10 +133,22 @@ def get_users(cursor):
     SELECT name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation
     FROM "user"
     """
-
     cursor.execute(query)
     return cursor.fetchall()
 
+
+''' GET USERS TABLE COLUMN NAMES'''
+
+@connection.connection_handler
+def get_users_table_header(cursor):
+    query = """
+    SELECT name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation
+    FROM "user"
+    LIMIT 0
+    """
+    cursor.execute(query)
+    colnames = [desc[0] for desc in cursor.description]
+    return colnames
 
 
 
