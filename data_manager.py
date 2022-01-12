@@ -85,6 +85,22 @@ def delete_question_by_id(cursor, question_id):
     return cursor.execute(query)
 
 
+''' User registration '''
+@connection.connection_handler
+def add_user(cursor, user):
+    query = sql.SQL("""
+    INSERT INTO "user" (id, registration_id, name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation) 
+    VALUES (DEFAULT, DEFAULT, {name}, {registration_date}, {num_of_questions}, {num_of_answers}, {num_of_comments}, {reputation})
+    """).format(name=sql.Literal(user['name']),
+                registration_date=sql.Literal(user['registration_date']),
+                num_of_questions=sql.Literal(user['num_of_questions']),
+                num_of_answers=sql.Literal(user['num_of_answers']),
+                num_of_comments=sql.Literal(user['num_of_comments']),
+                reputation=sql.Literal(user['reputation'])
+                )
+    cursor.execute(query)
+
+
 
 
 
