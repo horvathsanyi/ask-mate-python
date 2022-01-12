@@ -101,6 +101,17 @@ def add_user(cursor, user):
     cursor.execute(query)
 
 
+''' User login '''
+@connection.connection_handler
+def check_password(cursor, username):
+    query = sql.SQL("""
+    SELECT password
+    FROM registration
+    WHERE email = {username}
+    """).format(username=sql.Literal(username))
+    return cursor.execute(query)
+
+
 
 
 

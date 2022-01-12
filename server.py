@@ -1,12 +1,15 @@
-from flask import Flask, render_template
 from bonus_questions import SAMPLE_QUESTIONS
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import data_manager
 import connection
 import datetime
 import util
 
 app = Flask(__name__)
+
+
+#Set the secret key to some random bytes. Keep this really secret!
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 @app.route("/bonus-questions")
@@ -145,6 +148,23 @@ def registration():
         return redirect(url_for('list'))
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+
+    if request.method == "POST":
+
+        username = request.form['username']
+        password = request.form['password']
+        original_password = data_manager.check_password(username)
+
+        valid_password = util.verify_password(password, original_password)
+
+        if valid_password:
+            session['username'] = request.form['username']
+            return redirect((url_for('list')))
+        else:
+            redirect(url_for('login'))
+    return render_template('login.html')
 
 
 if __name__ == "__main__":
