@@ -24,7 +24,7 @@ ALTER TABLE IF EXISTS ONLY public."user" DROP CONSTRAINT IF EXISTS pk_user_id CA
 DROP TABLE IF EXISTS public.registration;
 CREATE TABLE registration (
     id serial NOT NULL,
-    email text,
+    name VARCHAR(20),
     password text
 );
 
