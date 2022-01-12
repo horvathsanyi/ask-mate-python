@@ -104,9 +104,9 @@ def add_user(cursor, user):
 @connection.connection_handler
 def add_registration(cursor, user):
     query = sql.SQL("""
-    INSERT INTO "registration" (id, username, password) 
-    VALUES (DEFAULT, {username}, {password})
-    """).format(username=sql.Literal(user['username']),
+    INSERT INTO registration (id, name, password) 
+    VALUES (DEFAULT, {name}, {password})
+    """).format(name=sql.Literal(user['username']),
                 password=sql.Literal(user['password']),
                 )
     cursor.execute(query)
@@ -119,9 +119,10 @@ def check_password(cursor, username):
     query = sql.SQL("""
     SELECT password
     FROM registration
-    WHERE username = {username}
+    WHERE name = {username}
     """).format(username=sql.Literal(username))
-    return cursor.execute(query)
+    cursor.execute(query)
+    return cursor.fetchone()['password']
 
 
 
