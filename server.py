@@ -181,12 +181,16 @@ def logout():
 
 @app.route('/list-users')
 def list_users():
-
     users_table = data_manager.get_users()
+    users_table_header = data_manager.get_users_table_header()
 
+    print(users_table_header)
     print(users_table)
 
-    render_template('list_users.html',)
+    render_template('list_users.html',
+                    users_table=users_table,
+                    users_table_header=users_table_header)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
