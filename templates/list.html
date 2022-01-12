@@ -7,6 +7,8 @@
 {% block body %}
 <h1>AskMate</h1>
 
+<button name="button"><a href="{{ url_for('registration') }}">Register an Account</a></button>
+
 <form action='/list' method='get'>
     <label for='sort_by'>Sort by:</label>
     <select id='sort_by' name='sort_by'>

@@ -134,7 +134,7 @@ def registration():
     user = {}
     if request.method == "POST":
         user['username'] = request.form['username']
-        user['pasword'] = util.hash_password(request.form['password'])
+        user['password'] = util.hash_password(request.form['password'])
         user['registration_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         user['number_of_questions'] = 0
         user['number_of_answers'] = 0
@@ -143,6 +143,7 @@ def registration():
 
         data_manager.add_user(user)
         return redirect(url_for('list'))
+    return render_template('registration.html')
 
 
 
