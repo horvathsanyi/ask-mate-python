@@ -125,6 +125,19 @@ def check_password(cursor, username):
     return cursor.fetchone()['password']
 
 
+''' List Users '''
+
+@connection.connection_handler
+def get_users(cursor):
+    query = """
+    SELECT name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation
+    FROM "user"
+    """
+
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 
 
 
