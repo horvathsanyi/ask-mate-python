@@ -160,6 +160,8 @@ def login():
         password = request.form['password']
         original_password = data_manager.check_password(username)
 
+        print(password, original_password)
+
         valid_password = util.verify_password(password, original_password)
 
         if valid_password:
