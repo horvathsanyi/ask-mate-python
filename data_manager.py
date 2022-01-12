@@ -100,14 +100,26 @@ def add_user(cursor, user):
                 )
     cursor.execute(query)
 
+''' User registration '''
+@connection.connection_handler
+def add_registration(cursor, user):
+    query = sql.SQL("""
+    INSERT INTO "registration" (id, username, password) 
+    VALUES (DEFAULT, {username}, {password})
+    """).format(username=sql.Literal(user['username']),
+                password=sql.Literal(user['password']),
+                )
+    cursor.execute(query)
+
 
 ''' User login '''
+
 @connection.connection_handler
 def check_password(cursor, username):
     query = sql.SQL("""
     SELECT password
     FROM registration
-    WHERE email = {username}
+    WHERE username = {username}
     """).format(username=sql.Literal(username))
     return cursor.execute(query)
 

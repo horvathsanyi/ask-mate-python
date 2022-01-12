@@ -145,6 +145,7 @@ def registration():
         user['reputation'] = 0
 
         data_manager.add_user(user)
+        data_manager.add_registration(user)
         return redirect(url_for('list'))
     return render_template('registration.html')
 
