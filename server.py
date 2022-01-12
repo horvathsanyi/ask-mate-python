@@ -159,7 +159,6 @@ def login():
 
         valid_password = util.verify_password(password, original_password)
 
-        if valid_password:
             session['username'] = request.form['username']
             return redirect((url_for('list')))
         else:
