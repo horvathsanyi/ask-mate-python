@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import data_manager
 import connection
 import datetime
+import util
 
 app = Flask(__name__)
 
@@ -125,6 +126,25 @@ def vote_up_question(question_id):
                 row['vote_number'] = int(row['vote_number']) + 1
     data_manager.write_all_questions(questions)
     return redirect('/list')
+
+
+''' User Registration part'''
+@app.route('/registration', methods=["GET", "POST"])
+def registration():
+    user = {}
+    if request.method == "POST":
+        user['username'] = request.form['username']
+        user['pasword'] = util.hash_password(request.form['password'])
+        user['registration_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user['number_of_questions'] = 0
+        user['number_of_answers'] = 0
+        user['number_of_comments'] = 0
+        user['reputation'] = 0
+
+        data_manager.add_user(user)
+        return redirect(url_for('list'))
+
+
 
 
 if __name__ == "__main__":
