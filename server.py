@@ -139,9 +139,9 @@ def registration():
         user['username'] = request.form['username']
         user['password'] = util.hash_password(request.form['password'])
         user['registration_date'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        user['number_of_questions'] = 0
-        user['number_of_answers'] = 0
-        user['number_of_comments'] = 0
+        user['num_of_questions'] = 0
+        user['num_of_answers'] = 0
+        user['num_of_comments'] = 0
         user['reputation'] = 0
 
         data_manager.add_user(user)

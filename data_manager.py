@@ -91,7 +91,7 @@ def add_user(cursor, user):
     query = sql.SQL("""
     INSERT INTO "user" (id, registration_id, name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation) 
     VALUES (DEFAULT, DEFAULT, {name}, {registration_date}, {num_of_questions}, {num_of_answers}, {num_of_comments}, {reputation})
-    """).format(name=sql.Literal(user['name']),
+    """).format(name=sql.Literal(user['username']),
                 registration_date=sql.Literal(user['registration_date']),
                 num_of_questions=sql.Literal(user['num_of_questions']),
                 num_of_answers=sql.Literal(user['num_of_answers']),
