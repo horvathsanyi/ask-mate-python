@@ -5,60 +5,68 @@
 {% endblock %}
 
 {% block body %}
-<h1>AskMate</h1>
+    <h1>AskMate</h1>
 
-<button name="button"><a href="{{ url_for('registration') }}">Register an Account</a></button>
+    <button name="button"><a href="{{ url_for('registration') }}">Register an Account</a></button>
 
-<button name="button"><a href="{{ url_for('login') }}">Login to your Account</a></button>
+    <button name="button"><a href="{{ url_for('login') }}">Login to your Account</a></button>
 
-<button name="button"><a href="{{ url_for('list_users') }}">Users List</a></button>
+    {% if 'username' in session %}
+        <button name="button"><a href="{{ url_for('list_users') }}">Users List</a></button>
+    {% else %}
+        <p class="bordered">Login to list Users</p>
+    {% endif %}
 
-<form action='/list' method='get'>
-    <label for='sort_by'>Sort by:</label>
-    <select id='sort_by' name='sort_by'>
-        <option {{ "selected" if sort_by=="title" else ""}} value='title'>Title</option>
-        <option {{ "selected" if sort_by=="submission_time" else ""}} value='submission_time'>Time</option>
-        <option {{ "selected" if sort_by=="message" else ""}} value='message'>Message</option>
-        <option {{ "selected" if sort_by=="view_number" else ""}} value='view_number'>Views</option>
-        <option {{ "selected" if sort_by=="vote_number" else ""}} value='vote_number'>Votes</option>
-    </select>
-    <select id='order' name='order'>
-        <option {{ "selected" if order=="asc" else ""}} value='asc'>Ascending</option>
-        <option {{ "selected" if order=="desc" else ""}} value='desc'>Descending</option>
-    </select>
-    <button type="submit">Sort</button>
-</form>
+    <form action='/list' method='get'>
+        <label for='sort_by'>Sort by:</label>
+        <select id='sort_by' name='sort_by'>
+            <option {{ "selected" if sort_by=="title" else "" }} value='title'>Title</option>
+            <option {{ "selected" if sort_by=="submission_time" else "" }} value='submission_time'>Time</option>
+            <option {{ "selected" if sort_by=="message" else "" }} value='message'>Message</option>
+            <option {{ "selected" if sort_by=="view_number" else "" }} value='view_number'>Views</option>
+            <option {{ "selected" if sort_by=="vote_number" else "" }} value='vote_number'>Votes</option>
+        </select>
+        <select id='order' name='order'>
+            <option {{ "selected" if order=="asc" else "" }} value='asc'>Ascending</option>
+            <option {{ "selected" if order=="desc" else "" }} value='desc'>Descending</option>
+        </select>
+        <button type="submit">Sort</button>
+    </form>
 
-<table>
-    <colgroup span='8'></colgroup>
+    <table>
+        <colgroup span='8'></colgroup>
         <tr>
-            <th> ID </th>
-            <th> Submission time </th>
-            <th> View number </th>
-            <th> Vote number </th>
-            <th> Title </th>
-            <th> Message </th>
-            <th> Image </th>
-            <th> Vote up </th>
+            <th> ID</th>
+            <th> Submission time</th>
+            <th> View number</th>
+            <th> Vote number</th>
+            <th> Title</th>
+            <th> Message</th>
+            <th> Image</th>
+            <th> Vote up</th>
         </tr>
         <tbody>
-            {% for row in table_data %}
+        {% for row in table_data %}
             <tr align='center'>
                 {% for key, value in row.items() %}
                     {% if key == 'id' %}
-                    <td><a id='justhere' href='/display-question/{{ value }}'>{{ value }}</a></td>
+                        <td><a id='justhere' href='/display-question/{{ value }}'>{{ value }}</a></td>
                     {% else %}
-                    <td> {{ value }} </td>
+                        <td> {{ value }} </td>
                     {% endif %}
                 {% endfor %}
                 {% for key, value in row.items() %}
                     {% if key == 'id' %}
-                    <td><a id='votelink' href="/question/{{ row['id'] }}/vote-up">Vote up</a></td>
+                        <td><a id='votelink' href="/question/{{ row['id'] }}/vote-up">Vote up</a></td>
                     {% endif %}
                 {% endfor %}
             </tr>
-            {% endfor %}
+        {% endfor %}
         </tbody>
-</table>
-<button name="button"><a href="/add-question">Ask new question</a></button>
+    </table>
+    {% if 'username' in session %}
+        <button name="button"><a href="/add-question">Ask new question</a></button>
+    {% else %}
+                <p class="bordered">Login to Ask a New Question</p>
+    {% endif %}
 {% endblock %}
