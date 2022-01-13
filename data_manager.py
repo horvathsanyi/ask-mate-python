@@ -151,6 +151,30 @@ def get_users_table_header(cursor):
     return colnames
 
 
+''' User details '''
+
+@connection.connection_handler
+def user_details(cursor, user_id):
+    query = sql.SQL("""
+    SELECT id, name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation
+    FROM "user"
+    WHERE id = {user_id}
+    """).format(user_id=sql.Literal(user_id))
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+''' User id '''
+
+@connection.connection_handler
+def user_id(cursor, username):
+    query = sql.SQL("""
+    SELECT id
+    FROM "user"
+    WHERE name = {username}
+    """).format(username=sql.Literal(username))
+    cursor.execute(query)
+    return cursor.fetchone()['id']
 
 
 

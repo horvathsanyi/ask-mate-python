@@ -20,6 +20,9 @@ def main():
 @app.route("/")
 @app.route('/list', methods=['GET'])
 def list():
+    username = None
+    user_id = None
+
     if 'sort_by' in request.args and 'order' in request.args:
         sort_by = request.args['sort_by']
         order = request.args['order']
@@ -32,8 +35,15 @@ def list():
     else:
         table_data = data_manager.get_questions()
 
-        return render_template('list.html',
-                               table_data=table_data)
+    if session:
+        username = session['username']
+        user_id = data_manager.user_id(username)
+
+
+    return render_template('list.html',
+                            table_data=table_data,
+                            user_id=user_id,
+                            username=username)
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -174,6 +184,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('username')
+    session.pop('id')
     return redirect(url_for('list'))
 
 
@@ -185,8 +196,19 @@ def list_users():
     users_table_header = data_manager.get_users_table_header()
 
     return render_template('list_users.html',
-                    users_table=users_table,
-                    users_table_header=users_table_header)
+                            users_table=users_table,
+                            users_table_header=users_table_header)
+
+
+@app.route('/user/<user_id>',  methods=['GET', 'POST'])
+def display_user_details(user_id):
+
+    user_details = data_manager.user_details(user_id)
+
+    print(user_id, user_details)
+
+    return render_template('user.html',
+                           user_details=user_details)
 
 
 if __name__ == "__main__":
