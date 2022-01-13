@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+User details
+{% endblock %}
+
+{% block body %}
+
+<h2>My Account</h2>
+
+<table>
+
+    <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Registration date</th>
+        <th>Number of asked questions</th>
+        <th>Number of answers</th>
+        <th>Number of comments</th>
+        <th>Reputation</th>
+    </tr>
+<tbody>
+    <tr>
+        {% for value in user_details %}
+        <td> {{ value.id }} </td>
+        <td> {{ value.name }} </td>
+        <td> {{ value.registration_date }} </td>
+        <td> {{ value.num_of_questions }} </td>
+        <td> {{ value.num_of_answers }} </td>
+        <td> {{ value.num_of_comments }} </td>
+        <td> {{ value.reputation }} </td>
+         {% endfor %}
+    </tr>
+</tbody>
+
+</table>
+
+{% endblock %}
