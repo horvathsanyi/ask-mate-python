@@ -100,7 +100,7 @@ def edit_question(question_id):
 
 
 @app.route('/answer/<answer_id>/delete', methods=['GET', 'POST'])
-def delete_asnwer(answer_id):
+def delete_answer(answer_id):
     if request.method == 'GET':
         question_id = connection.get_question_id_by_answer_id(answer_id)
 
@@ -168,6 +168,25 @@ def login():
         else:
             redirect(url_for('login'))
     return render_template('login.html')
+
+''' LOGOUT '''
+
+@app.route('/logout')
+def logout():
+    session.pop('username')
+    return redirect(url_for('list'))
+
+
+''' List Users '''
+
+@app.route('/list-users')
+def list_users():
+    users_table = data_manager.get_users()
+    users_table_header = data_manager.get_users_table_header()
+
+    return render_template('list_users.html',
+                    users_table=users_table,
+                    users_table_header=users_table_header)
 
 
 if __name__ == "__main__":

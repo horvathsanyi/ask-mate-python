@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block body %}
+<h1> Users </h1>
+
+<table>
+    <colgroup span="6"></colgroup>
+    <tr style="text-align: center">
+        {% for item in users_table_header %}
+            <th style="padding-inline: 10px">{{ item.capitalize().replace('_',' ') }}</th>
+        {% endfor %}
+    </tr>
+    <tbody style="text-align: center">
+        {% for user in users_table %}
+            <tr>
+                <td> {{ user.name }} </td>
+                <td> {{ user.registration_date }}</td>
+                <td> {{ user.num_of_questions }}</td>
+                <td> {{ user.num_of_answers }}</td>
+                <td> {{ user.num_of_comments }}</td>
+                <td> {{ user.reputation }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
