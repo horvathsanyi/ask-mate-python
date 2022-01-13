@@ -31,7 +31,7 @@ CREATE TABLE registration (
 DROP TABLE IF EXISTS public.user;
 CREATE TABLE "user" (
     id serial NOT NULL,
-    registration_id integer,
+    registration_id integer not null,
     name VARCHAR(20),
     registration_date timestamp without time zone,
     num_of_questions integer,
@@ -44,7 +44,7 @@ CREATE TABLE "user" (
 DROP TABLE IF EXISTS public.question;
 CREATE TABLE question (
     id serial NOT NULL,
-    user_id integer,
+    user_id integer NOT NULL ,
     submission_time timestamp without time zone,
     view_number integer,
     vote_number integer,

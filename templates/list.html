@@ -47,10 +47,10 @@
         </tr>
         <tbody>
         {% for row in table_data %}
-            <tr align='center'>
+            <tr>
                 {% for key, value in row.items() %}
                     {% if key == 'id' %}
-                        <td><a id='justhere' href='/display-question/{{ value }}'>{{ value }}</a></td>
+                        <td><a id='justhere' href="{{ url_for('display_question', question_id=value) }}">{{ value }}</a></td>
                     {% else %}
                         <td> {{ value }} </td>
                     {% endif %}
