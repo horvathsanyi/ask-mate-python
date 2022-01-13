@@ -169,6 +169,7 @@ def login():
             redirect(url_for('login'))
     return render_template('login.html')
 
+
 ''' LOGOUT '''
 
 @app.route('/logout')
