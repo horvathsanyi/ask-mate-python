@@ -36,23 +36,25 @@ def list():
                                table_data=table_data)
 
 
+'''ADD NEW QUESTION'''
 @app.route('/add-question', methods=['GET', 'POST'])
 def add_question():
-
     if request.method == 'GET':
         return render_template('add-question.html')
     elif request.method == 'POST':
-        question = [datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    0,
-                    0,
-                    request.form['title'],
-                    request.form['message'],
-                    request.form['image']
-                    ]
+        question = {
+                    'user_id': data_manager.get_user_id(session['username']),
+                    'submission_time': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'view_number': 0,
+                    'vote_number': 0,
+                    'title': request.form['title'],
+                    'message': request.form['message'],
+                    'image': request.form['image']
+        }
         data_manager.add_question(question)
         return redirect(url_for('list'))
 
-
+'''Display One Question'''
 @app.route('/display-question/<question_id>', methods=['GET', 'POST'])
 def display_question(question_id):
     data_manager.update_question_view_number(question_id)
@@ -60,7 +62,7 @@ def display_question(question_id):
     answer_headers = data_manager.get_answer_column_names()
     the_question = data_manager.get_question_by_id(question_id)
     answers = data_manager.get_answers_by_question_id(question_id)
-
+    print(answer_headers)
     return render_template('display-question.html',
                            question_id=question_id,
                            the_question=the_question,
@@ -68,6 +70,8 @@ def display_question(question_id):
                            answer_headers=answer_headers
                            )
 
+
+'''DELETE QUESTION'''
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
     data_manager.delete_question_by_id(question_id)
@@ -76,19 +80,23 @@ def delete_question(question_id):
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def new_answer(question_id):
-    message = {}
+    new_answer = {}
     if request.method == 'GET':
-        table_header = data_manager.table_header()
-        the_question = data_manager.get_question(question_id)
+        answer_headers = data_manager.get_answer_column_names()
+        the_question = data_manager.get_question_by_id(question_id)
         return render_template('new-answer.html',
-                               table_header=table_header,
+                               answer_headers=answer_headers,
                                the_question=the_question,
                                question_id=question_id)
     elif request.method == 'POST':
-        message['message'] = request.form['message']
-        message['question_id'] = question_id
-        data_manager.write_answer_data(message)
-        return redirect('/display-question/' + question_id)
+        new_answer['submission_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        new_answer['vote_number'] = 0
+        new_answer['message'] = request.form['message']
+        new_answer['image'] = request.form['image']
+        new_answer['question_id'] = question_id
+        new_answer['user_id'] = data_manager.get_user_id(session['username'])
+        data_manager.add_new_answer(new_answer)
+        return redirect(url_for('display_question', question_id=question_id))
 
 
 
@@ -97,18 +105,14 @@ def edit_question(question_id):
     pass
 
 
-
-
-@app.route('/answer/<answer_id>/delete', methods=['GET', 'POST'])
-def delete_answer(answer_id):
-    if request.method == 'GET':
-        question_id = connection.get_question_id_by_answer_id(answer_id)
-
+'''DELETE ANSWER'''
+@app.route('/display-question/<question_id>/delete/<answer_id>', methods=['GET', 'POST'])
+def delete_answer(answer_id,question_id):
         data_manager.delete_answer_by_id(answer_id)
+        return redirect(url_for('display_question',question_id=question_id))
 
-        return redirect('/display-question/' + question_id)
 
-
+'''VOTE UP ANSWER'''
 @app.route('/answer/<question_id>/<answer_id>/vote-up', methods=['GET', 'POST'])
 def vote_up_answer(question_id, answer_id):
     answers = data_manager.all_answers_in_csv()
@@ -120,15 +124,11 @@ def vote_up_answer(question_id, answer_id):
     return redirect('/display-question/' + question_id)
 
 
+'''VOTE UP QUESTION'''
 @app.route('/question/<question_id>/vote-up')
 def vote_up_question(question_id):
-    questions = data_manager.all_questions_in_csv()
-    if request.method == 'GET':
-        for row in questions:
-            if row['id'] == question_id:
-                row['vote_number'] = int(row['vote_number']) + 1
-    data_manager.write_all_questions(questions)
-    return redirect('/list')
+    data_manager.up_vote_question(question_id)
+    return redirect(request.referrer)
 
 
 ''' User Registration part'''
@@ -143,23 +143,22 @@ def registration():
         user['num_of_answers'] = 0
         user['num_of_comments'] = 0
         user['reputation'] = 0
-
-        data_manager.add_user(user)
         data_manager.add_registration(user)
+        user['registration_id'] = data_manager.get_registration_id(user['password'])
+        data_manager.add_user(user)
+        session['username'] = user['username']
         return redirect(url_for('list'))
+
     return render_template('registration.html')
 
 
 '''User login page and authentication'''
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-
     if request.method == "POST":
-
         username = request.form['username']
         password = request.form['password']
         original_password = data_manager.check_password(username)
-
         valid_password = util.verify_password(password, original_password)
 
         if valid_password:
