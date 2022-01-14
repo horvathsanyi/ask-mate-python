@@ -2,27 +2,27 @@
 
 
 {% block title %}
-Display question
+    Display question
 {% endblock %}
 
 
 {% block body %}
-<h1>The question</h1>
-<table>
-    <colgroup span='8'></colgroup>
+    <h2>The question</h2>
+    <table>
+        <colgroup span='8'></colgroup>
         <tr align='center'>
-            <th> ID </th>
-            <th> Submission time </th>
-            <th> View number </th>
-            <th> Vote number </th>
-            <th> Title </th>
-            <th> Message </th>
-            <th> Image </th>
-            <th> Vote up </th>
+            <th> ID</th>
+            <th> Submission time</th>
+            <th> View number</th>
+            <th> Vote number</th>
+            <th> Title</th>
+            <th> Message</th>
+            <th> Image</th>
+            <th> Vote up</th>
         </tr>
         <tbody>
-            <tr align='center'>
-                {% for value in the_question %}
+        <tr align='center'>
+            {% for value in the_question %}
                 <td> {{ value.id }} </td>
                 <td> {{ value.submission_time }} </td>
                 <td> {{ value.view_number }} </td>
@@ -30,55 +30,66 @@ Display question
                 <td> {{ value.title }} </td>
                 <td> {{ value.message }} </td>
                 <td> {{ value.image }} </td>
-                <td> {{ value.vote_up }} </td>
-                 {% endfor %}
-            </tr>
+                <td><a id='votelink' href="{{ url_for('vote_up_question',question_id=value.id) }}">Vote up</a></td>
+            {% endfor %}
+        </tr>
         </tbody>
-</table>
+    </table>
 
-<a href='/question/{{ question_id }}/delete'>
-    <button>Delete question</button>
-</a>
+    {% if session %}
+        <a href='/question/{{ question_id }}/delete'>
+            <button>Delete question</button>
+        </a>
+    {% endif %}
 
-<h1>The answers</h1>
-<table>
-    <colgroup span='8'></colgroup>
-        <tr align='center'>
+    <h2>The answers</h2>
+
+    {% if 'username' in session %}
+        <button name="button"><a href="{{ url_for('new_answer', question_id=question_id) }}">Add Answer</a></button>
+    {% else %}
+        <p class="bordered"><a style="color: blue" href="{{ url_for('login') }}">Login to Add a New Answer</a></p>
+    {% endif %}
+    <br>
+    <br>
+    <table>
+        <colgroup span='8'></colgroup>
+        <tr>
             {% for column_name in answer_headers %}
                 {% for key, value in column_name.items() %}
-                    <th> {{ value }}</th>
+                    <th style="padding-inline: 5px"> {{ value|capitalize|replace('_',' ') }}</th>
                 {% endfor %}
             {% endfor %}
-            <th>Delete</th>
-            <th>Vote up</th>
         </tr>
         <tbody>
-            {% for answer in answers %}
+        {% for answer in answers %}
             <tr align='center'>
                 <td> {{ answer.id }} </td>
                 <td> {{ answer.submission_time }} </td>
-                <td> {{ answer.vote_number }} </td>
+                <td> {{ answer.vote_number }}</td>
+                <td> {{ answer.user_id }} </td>
                 <td> {{ answer.message }} </td>
                 <td> {{ answer.image }} </td>
+                <td><a style="color: blue" href="{{ url_for('delete_answer',answer_id=answer.id, question_id=question_id) }}">Delete</a></td>
+                <td> Vote up</td>
 
-{#                {% for key, value in row.items() %}#}
-{#                    {%if key == 'id' %}#}
-{#                        <td><a id='deletelink' href="{{ url_for('delete_asnwer', answer_id=row['id']) }}"  >Delete</a></td>#}
-{#                        href="/answer/{{ row['id'] }}/delete"#}
-{#                        <td><a id='votelink' href="/answer/{{ question_id }}/{{ row['id'] }}/vote-up">Vote up</a></td>#}
-{#                    {% endif %}#}
-{#                {% endfor %}#}
+                {#                {% for key, value in row.items() %}#}
+                {#                    {%if key == 'id' %}#}
+                {#                        <td><a id='deletelink' href="{{ url_for('delete_asnwer', answer_id=row['id']) }}"  >Delete</a></td>#}
+                {#                        href="/answer/{{ row['id'] }}/delete"#}
+                {#                        <td><a id='votelink' href="/answer/{{ question_id }}/{{ row['id'] }}/vote-up">Vote up</a></td>#}
+                {#                    {% endif %}#}
+                {#                {% endfor %}#}
             </tr>
-            {% endfor %}
+        {% endfor %}
         </tbody>
-</table>
+    </table>
 
 
-{#{% for key, value in the_question.items() %}#}
-{#{% if key == 'id' %}#}
-{#    <button name="button"><a href="/question/{{ value }}/new-answer">Post an answer</a></button>#}
-{#{% endif %}#}
-{#{% endfor %}#}
+    {#{% for key, value in the_question.items() %}#}
+    {#{% if key == 'id' %}#}
+    {#    <button name="button"><a href="/question/{{ value }}/new-answer">Post an answer</a></button>#}
+    {#{% endif %}#}
+    {#{% endfor %}#}
 
 
 {% endblock %}

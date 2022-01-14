@@ -1,38 +1,50 @@
 {% extends 'base.html' %}
 
 {% block title %}
-New answer
+    New answer
 {% endblock %}
 
 {% block body %}
-
-<h1> The question </h1>
-
-<table>
-    <colgroup span='7'></colgroup>
+    <h2>The question</h2>
+    <table>
+        <colgroup span='8'></colgroup>
         <tr align='center'>
-            {% for item in table_header %}
-            <th> {{ item }}</th>
-            {% endfor %}
+            <th> ID</th>
+            <th> Submission time</th>
+            <th> View number</th>
+            <th> Vote number</th>
+            <th> Title</th>
+            <th> Message</th>
+            <th> Image</th>
+            <th> Vote up</th>
         </tr>
         <tbody>
-            <tr align='center'>
-                {% for key, value in the_question.items() %}
-                <td> {{ value }} </td>
-                {% endfor %}
-            </tr>
+        <tr align='center'>
+            {% for value in the_question %}
+                <td> {{ value.id }} </td>
+                <td> {{ value.submission_time }} </td>
+                <td> {{ value.view_number }} </td>
+                <td> {{ value.vote_number }} </td>
+                <td> {{ value.title }} </td>
+                <td> {{ value.message }} </td>
+                <td> {{ value.image }} </td>
+                <td><a id='votelink' href="{{ url_for('vote_up_question',question_id=value.id) }}">Vote up</a></td>
+            {% endfor %}
+        </tr>
         </tbody>
-</table>
+    </table>
 
-<h1> Your answer </h1>
+    <h1> Your answer </h1>
 
-<form action='/question/{{ question_id }}/new-answer' method="post">
-    <fieldset>
-      <legend>Message</legend>
-      <textarea type="text" name="message" rows='10' cols='40'></textarea>
-    </fieldset>
-    <button type='submit'>Submit</button>
-</form>
+    <form action="{{ url_for('new_answer', question_id=question_id) }}" method="post">
+        <fieldset>
+            <legend>Message</legend>
+            <textarea type="text" name="message" rows='10' cols='40'></textarea>
+            <legend>Image Link</legend>
+            <input type="url" name="image" size="40">
+        </fieldset>
+        <button type='submit'>Submit</button>
+    </form>
 
 
 

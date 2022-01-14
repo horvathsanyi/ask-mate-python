@@ -48,24 +48,50 @@ def get_answer_column_names(cursor):
     cursor.execute(query)
     return cursor.fetchall()
 
-
+''' ADD NEW QUESTION'''
 @connection.connection_handler
 def add_question(cursor, question):
-    print(question)
     query = sql.SQL("""
-    INSERT INTO question (id, submission_time, view_number, vote_number, title, message, image) 
-    VALUES (DEFAULT, {submission_time}, {view_number}, {vote_number}, {title}, {message}, {image});
-    """).format(submission_time=sql.Literal(question[0]),
-                view_number=sql.Literal(question[1]),
-                vote_number=sql.Literal(question[2]),
-                title=sql.Literal(question[3]),
-                message=sql.Literal(question[4]),
-                image=sql.Literal(question[5])
+    INSERT INTO question (id, user_id, submission_time, view_number, vote_number, title, message, image) 
+    VALUES (DEFAULT, {user_id}, {submission_time}, {view_number}, {vote_number}, {title}, {message}, {image});
+    """).format(user_id=sql.Literal(question['user_id']),
+                submission_time=sql.Literal(question['submission_time']),
+                view_number=sql.Literal(question['view_number']),
+                vote_number=sql.Literal(question['vote_number']),
+                title=sql.Literal(question['title']),
+                message=sql.Literal(question['message']),
+                image=sql.Literal(question['image'])
                 )
-
     cursor.execute(query)
 
 
+'''ADD NEW ANSWER'''
+@connection.connection_handler
+def add_new_answer(cursor, new_answer):
+    query = sql.SQL("""
+    INSERT INTO answer (id, submission_time, vote_number, question_id, message, image, user_id)
+    VALUES (DEFAULT, {submission_time}, {vote_number}, {question_id}, {message}, {image}, {user_id})
+    """).format(submission_time=sql.Literal(new_answer['submission_time']),
+                vote_number=sql.Literal(new_answer['vote_number']),
+                question_id=sql.Literal(new_answer['question_id']),
+                message=sql.Literal(new_answer['message']),
+                image=sql.Literal(new_answer['image']),
+                user_id=sql.Literal(new_answer['user_id'])
+                )
+    cursor.execute(query)
+
+'''UPDATE QUESTION VOTE NUMBER'''
+@connection.connection_handler
+def up_vote_question(cursor, question_id):
+    query = sql.SQL("""
+    UPDATE question
+    SET vote_number = vote_number + 1
+    WHERE id = {question_id}
+    """).format(question_id=sql.Literal(question_id))
+    cursor.execute(query)
+
+
+'''UPDATE QUESTION VIEW NUMBER'''
 @connection.connection_handler
 def update_question_view_number(cursor, question_id):
     query = sql.SQL("""
@@ -76,6 +102,7 @@ def update_question_view_number(cursor, question_id):
     return cursor.execute(query)
 
 
+'''DELETE QUESTION'''
 @connection.connection_handler
 def delete_question_by_id(cursor, question_id):
     query = sql.SQL("""
@@ -85,13 +112,24 @@ def delete_question_by_id(cursor, question_id):
     return cursor.execute(query)
 
 
-''' User registration '''
+'''DELETE ANSWER'''
+@connection.connection_handler
+def delete_answer_by_id(cursor,answer_id):
+    query = sql.SQL("""
+    DELETE FROM answer
+    WHERE id = {answer_id}
+    """).format(answer_id=sql.Literal(answer_id))
+    cursor.execute(query)
+
+
+''' Add user '''
 @connection.connection_handler
 def add_user(cursor, user):
     query = sql.SQL("""
     INSERT INTO "user" (id, registration_id, name, registration_date, num_of_questions, num_of_answers, num_of_comments, reputation) 
-    VALUES (DEFAULT, DEFAULT, {name}, {registration_date}, {num_of_questions}, {num_of_answers}, {num_of_comments}, {reputation})
-    """).format(name=sql.Literal(user['username']),
+    VALUES (DEFAULT, {registration_id}, {name}, {registration_date}, {num_of_questions}, {num_of_answers}, {num_of_comments}, {reputation})
+    """).format(registration_id=sql.Literal(user['registration_id']),
+                name=sql.Literal(user['username']),
                 registration_date=sql.Literal(user['registration_date']),
                 num_of_questions=sql.Literal(user['num_of_questions']),
                 num_of_answers=sql.Literal(user['num_of_answers']),
@@ -100,7 +138,7 @@ def add_user(cursor, user):
                 )
     cursor.execute(query)
 
-''' User registration '''
+''' Add user registration '''
 @connection.connection_handler
 def add_registration(cursor, user):
     query = sql.SQL("""
@@ -112,8 +150,30 @@ def add_registration(cursor, user):
     cursor.execute(query)
 
 
-''' User login '''
+''' Get registration ID'''
+@connection.connection_handler
+def get_registration_id(cursor, password):
+    query = sql.SQL("""
+    SELECT id
+    FROM registration
+    WHERE password = {password}
+    """).format(password=sql.Literal(password))
+    cursor.execute(query)
+    return cursor.fetchone()['id']
 
+
+''' GET USER ID'''
+@connection.connection_handler
+def get_user_id(cursor, username):
+    query = sql.SQL("""
+    SELECT id
+    FROM "user"
+    WHERE name = {username}
+    """).format(username=sql.Literal(username))
+    cursor.execute(query)
+    return cursor.fetchone()['id']
+
+''' User login '''
 @connection.connection_handler
 def check_password(cursor, username):
     query = sql.SQL("""
@@ -126,7 +186,6 @@ def check_password(cursor, username):
 
 
 ''' List Users '''
-
 @connection.connection_handler
 def get_users(cursor):
     query = """
@@ -138,7 +197,6 @@ def get_users(cursor):
 
 
 ''' GET USERS TABLE COLUMN NAMES'''
-
 @connection.connection_handler
 def get_users_table_header(cursor):
     query = """

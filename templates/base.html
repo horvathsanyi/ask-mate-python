@@ -12,6 +12,10 @@
     </title>
 </head>
 <body>
+    <h1><a style="color: black" href="/">AskMate</a></h1>
+    {% if session %}
+        <h2>Welcome {{ session.username }}!</h2>
+    {% endif %}
     {% block body %}
     {% endblock %}
 </body>
